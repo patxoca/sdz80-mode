@@ -187,6 +187,7 @@ global labels defined in the current buffer."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd ":") 'sdz80-colon)
     (define-key map (kbd "C-c m g") 'sdz80-declare-globl-symbol-at-point)
+    (define-key map (kbd "C-c m h") 'sdz80-update-dot-h)
     map))
 
 (define-derived-mode sdz80-mode
