@@ -63,6 +63,14 @@
       '((nil "^\s*\\([A-Za-z0-9_$]+\\)\s*:" 1)
         ))
 
+(defconst sdz80-font-lock-keywords
+  (append
+   '(("\\<\\(a\\|b\\|c\\|d\\|e\\|f\\|h\\|l\\|af\\|bc\\|de\\|hl\\|ix\\|iy\\)\\>"
+      1 font-lock-variable-name-face))
+   asm-font-lock-keywords)
+  "Additional expressions to highlight in sdasm")
+
+
 (defun sdz80--locate-directive (directive &optional start)
   "Locate a dot-directive.
 
@@ -196,6 +204,7 @@ global labels defined in the current buffer."
   "Major mode for editing z80 assembler for sdas."
   (message "Activant sdz80-mode.")
   (setq imenu-generic-expression sdz80-imenu)
+  (setq-local font-lock-defaults '(sdz80-font-lock-keywords nil t))
 )
 
 
