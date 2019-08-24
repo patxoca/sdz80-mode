@@ -1,0 +1,30 @@
+=sdz80-mode= is an emacs major mode that provides some helpers for
+programming assembler code for the =sdas= assembler bundled with sdcc.
+
+* Features
+
+=sdz80-mode= inherits from =asm-mode= adding the following features:
+
+- /imenu/ integration allows to quickly jump to any label in the file.
+
+- highlight Z80 registers.
+
+- implements an /electric colon/ supporting the =sdasm= double colon
+  syntax for global lables.
+
+- automatically add =.globl= directive for the symbol at point.
+
+- updates the header file (=.h.s=) with all global labels defined in
+  the source code.
+
+* Keydingins
+
+- =:=: electric colon
+
+- =C-c m g=: declare global symbol at point
+
+- =C-c m h=: update header file
+
+# Local Variables:
+# ispell-dictionary: "en"
+# End:
