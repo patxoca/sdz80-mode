@@ -10,14 +10,14 @@ programming assembler code for the =sdas= assembler bundled with sdcc.
 - highlight Z80 registers.
 
 - implements an /electric colon/ supporting the =sdasm= double colon
-  syntax for global lables.
+  syntax for global labels.
 
 - automatically add =.globl= directive for the symbol at point.
 
 - updates the header file (=.h.s=) with all global labels defined in
   the source code.
 
-* Keydingins
+* Keybindings
 
 - =:=: electric colon
 
