@@ -4,7 +4,7 @@
 
 ;; Emacs List Archive Entry
 ;; Filename: sdz80-mode.el
-;; Version: $Revision:$
+;; Version: 0.1
 ;; Keywords:
 ;; Author: Alexis Roda <alexis.roda.villalonga@gmail.com>
 ;; Maintainer: Alexis Roda <alexis.roda.villalonga@gmail.com>
@@ -68,17 +68,17 @@
    '(("\\<\\(a\\|b\\|c\\|d\\|e\\|f\\|h\\|l\\|af\\|bc\\|de\\|hl\\|ix\\|iy\\)\\>"
       1 font-lock-variable-name-face))
    asm-font-lock-keywords)
-  "Additional expressions to highlight in sdasm")
+  "Additional expressions to highlight in sdasm.")
 
 
 (defun sdz80--locate-directive (directive &optional start)
   "Locate a dot-directive.
 
 Returns the point at the begining of the first line containing
-the directive `directive'. If provided start searching at
-`start', otherwise start at `point-min'.
+the directive `DIRECTIVE'. If provided start searching at
+`START', otherwise start at `point-min'.
 
-If the directive is not found returns `nil'.
+If the directive is not found returns nil.
 
 Both point and match data are preserved."
   (let ((res nil)
@@ -118,7 +118,7 @@ buffer."
       res)))
 
 (defun sdz80-colon ()
-  "Inserts a colon.
+  "Insert a colon.
 
 Like `asm-colon' but supports sdas's double colon syntax for
 declaring global labels."
@@ -147,7 +147,7 @@ declaring global labels."
             ;; error.
             (let ((q (sdz80--locate-directive "area")))
               (if (null q)
-                  (error "No '.globl' or '.area' directive found.")
+                  (error "No '.globl' or '.area' directive found")
                 (sdz80--insert-globl-directive sym-ap q)
                 (newline-and-indent)))
           ;; Locate insertion point so that directives are kept
