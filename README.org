@@ -3,7 +3,7 @@ programming assembler code for the =sdas= assembler bundled with sdcc.
 
 * Features
 
-=sdz80-mode= inherits from =asm-mode= adding the following features:
+=sdz80-mode= extends =asm-mode= adding the following features:
 
 - /imenu/ integration allows to quickly jump to any label in the file.
 
@@ -30,7 +30,7 @@ programming assembler code for the =sdas= assembler bundled with sdcc.
 
 - =C-c m h=: update header file
 
-- =C-c m o=: show opcodes. Pres =?= or =h= in that buffer to futher
+- =C-c m o=: show opcodes. Press =?= or =h= in that buffer to futher
   details.
 
 # Local Variables:
