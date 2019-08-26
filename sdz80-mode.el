@@ -128,7 +128,7 @@ declaring global labels."
   (let ((labelp nil))
     (save-excursion
       (beginning-of-line)
-      (when (setq labelp (looking-at-p "^\s*[[:alpha:]_]+:?\s*$"))
+      (when (setq labelp (looking-at-p "^\s*[$.[:alpha:][:digit:]_]+:?\s*$"))
         (delete-horizontal-space)))
     (if (not labelp)
         (insert ":")
