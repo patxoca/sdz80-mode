@@ -17,6 +17,11 @@ programming assembler code for the =sdas= assembler bundled with sdcc.
 - updates the header file (=.h.s=) with all global labels defined in
   the source code.
 
+- display information about Z80 opcodes. Data taken from
+  http://clrhome.org/table/. It allows to sort, filter and show
+  details about the opcodes.
+
+
 * Keybindings
 
 - =:=: electric colon
@@ -24,6 +29,9 @@ programming assembler code for the =sdas= assembler bundled with sdcc.
 - =C-c m g=: declare global symbol at point
 
 - =C-c m h=: update header file
+
+- =C-c m o=: show opcodes. Pres =?= or =h= in that buffer to futher
+  details.
 
 # Local Variables:
 # ispell-dictionary: "en"
