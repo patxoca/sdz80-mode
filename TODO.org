@@ -1,0 +1,34 @@
+#+TITLE: sdz80-mode TODOs
+#+AUTHOR: Alexis Roda
+#+EMAIL: alexis.roda.villalonga@gmail.com
+
+#+LANGUAGE: en
+
+#+TODO: TODO STRT HOLD PAUS DONE(@)
+#+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
+#+TODO: | CANCELED(c)
+
+#+LATEX_CLASS: informe
+#+OPTIONS: ^:nil ':t toc:1
+
+#+TAGS: proposal enhancement annoyance bug
+
+* Todo
+
+** Helper for generating labels                                    :proposal:
+
+A function may require private labels for loops etc. In order to
+guarantee uniqueness the label may have the format
+=_<PREFIX>_<LOCAL>:=.
+
+The proposal is to use the function public label as the /prefix/ and
+ask the user for the /local/ part.
+
+* Done
+
+
+* Local variables
+
+# Local Variables:
+# ispell-dictionary: "en"
+# End:
