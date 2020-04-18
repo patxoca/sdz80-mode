@@ -108,7 +108,7 @@ buffer."
       (let ((res nil))
         (goto-char (point-min))
         (while (not (eobp))
-          (when (looking-at "^\s*\\([[:alpha:]_]+\\)::")
+          (when (looking-at "^\s*\\([[:alnum:]_]+\\)::")
             (setq res (cons (match-string-no-properties 1) res)))
           (forward-line))
         (reverse res)))))
@@ -176,7 +176,7 @@ declaring global labels."
 
 (defun sdz80-update-dot-h ()
   "Creates/updates 'xxx.h.s' adding '.globl' directives for the
-global labels defined in the current buffer."
+global labels (double color) defined in the current buffer."
   (interactive)
   (save-excursion
     (let ((global-symbols (sdz80--get-global-symbols))
