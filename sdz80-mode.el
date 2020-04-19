@@ -108,7 +108,7 @@ buffer."
       (let ((res nil))
         (goto-char (point-min))
         (while (not (eobp))
-          (when (looking-at "^\s*\\([[:alnum:]_]+\\)::")
+          (when (looking-at "^\s*\\([[:alpha:]$._][[:alnum:]$._]*\\)::")
             (setq res (cons (match-string-no-properties 1) res)))
           (forward-line))
         (reverse res)))))
