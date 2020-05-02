@@ -72,6 +72,13 @@
    asm-font-lock-keywords)
   "Additional expressions to highlight in sdasm.")
 
+(defconst sdz80--label-regex
+  "^\s*\\([[:alpha:]$._][[:alnum:]$._]*\\):"
+  "Regex for labels, either local or global.")
+
+(defconst sdz80--global-label-regex
+  (concat sdz80--label-regex ":")
+  "Regex for global labels.")
 
 (defun sdz80--locate-directive (directive &optional start)
   "Locate a dot-directive.
@@ -108,7 +115,7 @@ buffer."
       (let ((res nil))
         (goto-char (point-min))
         (while (not (eobp))
-          (when (looking-at "^\s*\\([[:alpha:]$._][[:alnum:]$._]*\\)::")
+          (when (looking-at sdz80--global-label-regex)
             (setq res (cons (match-string-no-properties 1) res)))
           (forward-line))
         (reverse res)))))
