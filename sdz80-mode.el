@@ -120,6 +120,33 @@ buffer."
           (forward-line))
         (reverse res)))))
 
+(defun sdz80--get-labels ()
+  "Returns a list of pairs '(label line-number)' for each label,
+either local or global, defined in the current buffer."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (save-match-data
+        (let ((res nil)
+              (current-line (line-number-at-pos)))
+          (while (not (eobp))
+            (when (looking-at sdz80--label-regex)
+              (push (list (match-string-no-properties 1) current-line) res))
+            (forward-line)
+            (setq current-line (1+ current-line)))
+          res
+          )))))
+
+(defun sdz80--get-labels-before-line (&optional line)
+  "Returns labels defined before `LINE'. If `LINE' is omitted
+return labels defined before the current line."
+  (when (null line)
+    (setq line (line-number-at-pos)))
+  (seq-map (lambda (x) (car x))
+           (seq-filter (lambda (x) (<= (cadr x) line))
+                       (sdz80--get-labels))))
+
 (defun sdz80--get-include-file-name (file-name)
   (let ((res (replace-regexp-in-string "\\.s$" ".h.s" file-name)))
     (if (string-equal file-name res)
@@ -200,11 +227,30 @@ global labels (double color) defined in the current buffer."
       (save-buffer)
       (kill-buffer))))
 
+(defun sdz80-insert-new-private-local-label ()
+  "Insert a label local to a subrutine.
+
+In order to avoid conflicts it constructs the new label
+concatenating a dominating label (the current function's label
+btw.) and a suffix unique within the current block.
+
+The command prompts the user to choose a label among those
+defined before the current line (the dominating label). After the
+user has select a value it prompts for a free form suffix."
+  (interactive)
+  (let ((prefix (ido-completing-read "Prefix label: "
+                                     (sdz80--get-labels-before-line)))
+        (suffix (read-string "Suffix: ")))
+    (forward-line 0)
+    (insert (format "_%s_%s:" prefix suffix))
+    (newline-and-indent)))
+
 (setq sdz80-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd ":") 'sdz80-colon)
     (define-key map (kbd "C-c m g") 'sdz80-declare-globl-symbol-at-point)
     (define-key map (kbd "C-c m h") 'sdz80-update-dot-h)
+    (define-key map (kbd "C-c m n") 'sdz80-insert-new-private-local-label)
     (define-key map (kbd "C-c m o") 'z80op)
     map))
 
