@@ -245,11 +245,18 @@ user has select a value it prompts for a free form suffix."
     (insert (format "_%s_%s:" prefix suffix))
     (newline-and-indent)))
 
+(defun sdz80-insert-local-label ()
+  "Insert a label defined in the current buffer."
+  (interactive)
+  (insert (ido-completing-read "Label: "
+                               (seq-map #'car (reverse (sdz80--get-labels))))))
+
 (setq sdz80-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd ":") 'sdz80-colon)
     (define-key map (kbd "C-c m g") 'sdz80-declare-globl-symbol-at-point)
     (define-key map (kbd "C-c m h") 'sdz80-update-dot-h)
+    (define-key map (kbd "C-c m l") 'sdz80-insert-local-label)
     (define-key map (kbd "C-c m n") 'sdz80-insert-new-private-local-label)
     (define-key map (kbd "C-c m o") 'z80op)
     map))
