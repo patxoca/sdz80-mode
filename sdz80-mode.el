@@ -268,7 +268,7 @@ user has select a value it prompts for a free form suffix."
   (message "Activant sdz80-mode.")
   (setq imenu-generic-expression sdz80-imenu)
   (setq-local font-lock-defaults '(sdz80-font-lock-keywords nil t))
-)
+  (setq fill-prefix nil))
 
 
 (provide 'sdz80-mode)
