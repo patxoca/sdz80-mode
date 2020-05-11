@@ -14,6 +14,87 @@
 #+TAGS: proposal enhancement annoyance bug
 
 * Todo
+** font-lock
+
+Tenia aquest codi comentat en =sdz80-mode.el=. Suposo que era un
+exemple per ajudar a millorar el coloritzat però no recordo exactament
+que.
+
+#+begin_src emacs-lisp
+  (defconst cpp-font-lock-keywords
+    (let* ((directives cpp-font-lock-keywords-source-directives)
+           (directives-depth cpp-font-lock-keywords-source-depth))
+      (list
+       ;;
+       ;; Fontify error directives.
+       '("^#[ \t]*\\(?:error\\|warning\\)[ \t]+\\(.+\\)" 1 font-lock-warning-face prepend)
+       ;;
+       ;; Fontify filenames in #include <...> preprocessor directives as strings.
+       '("^#[ \t]*\\(?:import\\|include\\)[ \t]*\\(<[^>\"\n]*>?\\)"
+         1 font-lock-string-face prepend)
+       ;;
+       ;; Fontify function macro names.
+       '("^#[ \t]*define[ \t]+\\([[:alpha:]_][[:alnum:]_$]*\\)("
+         (1 font-lock-function-name-face prepend)
+         ;;
+         ;; Macro arguments.
+         ((lambda (limit)
+            (re-search-forward
+             "\\(?:\\([[:alpha:]_][[:alnum:]_]*\\)[,]?\\)"
+             (or (save-excursion (re-search-forward ")" limit t))
+                 limit)
+             t))
+          nil nil (1 font-lock-variable-name-face prepend)))
+       ;;
+       ;; Fontify symbol names in #elif or #if ... defined preprocessor directives.
+       '("^#[ \t]*\\(?:elif\\|if\\)\\>"
+         ("\\<\\(defined\\)\\>[ \t]*(?\\([[:alpha:]_][[:alnum:]_]*\\)?" nil nil
+          (1 font-lock-builtin-face prepend) (2 font-lock-variable-name-face prepend t)))
+       ;;
+       ;; Fontify otherwise as symbol names, and the preprocessor directive names.
+       (list
+        (concat "^\\(#[ \t]*\\(?:" directives
+                "\\)\\)\\>[ \t!]*\\([[:alpha:]_][[:alnum:]_]*\\)?")
+        '(1 font-lock-preprocessor-face prepend)
+        (list (+ 2 directives-depth)
+              'font-lock-variable-name-face nil t))))
+    "Font lock keywords for C preprocessor directives.
+  `c-mode', `c++-mode' and `objc-mode' have their own font lock keywords
+  for C preprocessor directives.  This definition is for the other modes
+  in which C preprocessor directives are used. e.g. `asm-mode' and
+  `ld-script-mode'.")
+
+  (defconst asm-font-lock-keywords
+    (append
+     '(("^\\(\\(\\sw\\|\\s_\\)+\\)\\>:?[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
+        (1 font-lock-function-name-face) (3 font-lock-keyword-face nil t))
+       ;; label started from ".".
+       ("^\\(\\.\\(\\sw\\|\\s_\\)+\\)\\>:"
+        1 font-lock-function-name-face)
+       ("^\\((\\sw+)\\)?\\s +\\(\\(\\.?\\sw\\|\\s_\\)+\\(\\.\\sw+\\)*\\)"
+        2 font-lock-keyword-face)
+       ;; directive started from ".".
+       ("^\\(\\.\\(\\sw\\|\\s_\\)+\\)\\>[^:]?"
+        1 font-lock-keyword-face)
+       ;; %register
+       ("%\\sw+" . font-lock-variable-name-face))
+     cpp-font-lock-keywords)
+    "Additional expressions to highlight in Assembler mode.")
+
+  A més de revisar l'anterior, valorar si utilitzar
+  font-lock-constant-face pels literals.
+
+
+#+end_src
+
+
+** improve =sdz80-insert-local-label=
+
+Currently only labels defined in the current buffer are ofered as a
+completion. It would be nice to parse other =.s= files (maybe =.h.s=?)
+looking for global labels.
+
+* Done
 
 ** Helper for generating labels                                    :proposal:
 
@@ -23,8 +104,6 @@ guarantee uniqueness the label may have the format
 
 The proposal is to use the function public label as the /prefix/ and
 ask the user for the /local/ part.
-
-* Done
 
 
 * Local variables
