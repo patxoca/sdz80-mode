@@ -3,6 +3,8 @@
 
 (package-file "sdz80-mode.el")
 
+(depends-on "s")
+
 (development
  (depends-on "ert-runner"))
 

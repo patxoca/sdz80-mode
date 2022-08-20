@@ -52,6 +52,7 @@
 
 
 (require 'cl-lib)
+(require 's)
 (require 'tabulated-list)
 
 ;;; Code:
@@ -1338,6 +1339,9 @@
 
 (setq z80op--hide-undocumented nil)
 
+;; this will be initialized later
+(setq z80op--mnemonics nil)
+
 
 ;; accessors
 
@@ -1349,9 +1353,13 @@ forward slash. The value in the left is for the case in which the
 condition is met and the value on the right for when it's not."
   (aref x 0))
 
+(defun z80op--opcode-example (x)
+  "Return the example."
+  (aref x 1))
+
 (defun z80op--opcode-mnemonic (x)
   "Return the mnemonic."
-  (aref x 1))
+  (car (s-split " " (aref x 1))))
 
 (defun z80op--opcode-flags (x)
   "Return the flags, an string.
@@ -1410,7 +1418,7 @@ of each possible value are:
                (list
                 (z80op--opcode-flags x)
                 (format "%6s" (z80op--opcode-cycles x))
-                (propertize (z80op--opcode-mnemonic x)
+                (propertize (z80op--opcode-example x)
                             'font-lock-face (if (z80op--opcode-undocumented x)
                                                 'z80op-face-undocumented
                                               'z80op-face-documented))
@@ -1425,13 +1433,20 @@ affect the outcome."
    (lambda (x) (or
            (and z80op--hide-undocumented
                 (z80op--opcode-undocumented x))
-           (not (string-match z80op--filter (z80op--opcode-mnemonic x)))))
+           (not (string-match z80op--filter (z80op--opcode-example x)))))
    z80op--opcode-table))
+
+(defun z80op--extract-intruction-mnemonics ()
+  "Extract instruction mnemonics from the examples."
+  (delete-dups (mapcar (lambda (x) (downcase (z80op--opcode-mnemonic x)))
+                       z80op--opcode-table)))
+
+(defun z80op--is-mnemonic (s)
+  (not (null (member (downcase s) z80op--mnemonics))))
 
 (defun z80op--tabulated-list-entries ()
   "Return the entries to be displayed."
   (mapcar #'z80op--get-tabular-data (z80op--run-filter)))
-
 
 (defun z80op--detail-insert-entry (label value)
   "Insert LABEL and VALUE in the detail buffer."
@@ -1454,7 +1469,7 @@ affect the outcome."
 
 (defun z80op--detail-describe-opcode (entry)
   "Insert the detailed description in the current buffer."
-  (z80op--detail-insert-entry "Mnemonic:    " (z80op--opcode-mnemonic entry))
+  (z80op--detail-insert-entry "Example:     " (z80op--opcode-example entry))
   (z80op--detail-insert-entry "Flags:" "")
   (let ((flags (z80op--opcode-flags entry)))
     (z80op--detail-insert-entry "  Carry:           " (z80op--detail-format-flag flags 0))
@@ -1520,11 +1535,22 @@ affect the outcome."
 (defun z80op ()
   "Display opcodes in a buffer."
   (interactive)
+  (let ((tap (symbol-name (symbol-at-point))))
+    (if (and (not (null tap))
+             (z80op--is-mnemonic tap))
+        (setq z80op--filter (concat (downcase tap) " .*"))
+      (setq z80op--filter ".*")))
   (switch-to-buffer "*z80*")
-  (setq z80op--filter ".*")
   (z80op-mode )
   ;; set data
   (tabulated-list-print))
+
+(defun z80op--init ()
+  (setq z80op--mnemonics (z80op--extract-intruction-mnemonics)))
+
+;;; initialization
+
+(z80op--init)
 
 
 (provide 'z80opcodes)
