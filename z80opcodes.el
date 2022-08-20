@@ -1424,29 +1424,27 @@ of each possible value are:
                                               'z80op-face-documented))
                 (z80op--opcode-description x)))))
 
-(defun z80op--run-filter ()
-  "Return the subset of opcodes matching the filter.
-
-The variables `z80op--hide-undocumented' and `z80op--filter'
-affect the outcome."
+(defun z80op--run-filter (opcode-table filter hide-undocumented)
+  "Return the subset of opcodes matching the filter."
   (cl-remove-if
    (lambda (x) (or
-           (and z80op--hide-undocumented
+           (and hide-undocumented
                 (z80op--opcode-undocumented x))
-           (not (string-match z80op--filter (z80op--opcode-example x)))))
-   z80op--opcode-table))
+           (not (string-match filter (z80op--opcode-example x)))))
+   opcode-table))
 
-(defun z80op--extract-intruction-mnemonics ()
+(defun z80op--extract-intruction-mnemonics (opcode-table)
   "Extract instruction mnemonics from the examples."
   (delete-dups (mapcar (lambda (x) (downcase (z80op--opcode-mnemonic x)))
-                       z80op--opcode-table)))
+                       opcode-table)))
 
-(defun z80op--is-mnemonic (s)
-  (not (null (member (downcase s) z80op--mnemonics))))
+(defun z80op--is-mnemonic (s mnemonics)
+  (not (null (member (downcase s) mnemonics))))
 
 (defun z80op--tabulated-list-entries ()
   "Return the entries to be displayed."
-  (mapcar #'z80op--get-tabular-data (z80op--run-filter)))
+  (mapcar #'z80op--get-tabular-data
+          (z80op--run-filter z80op--opcode-table z80op--filter z80op--hide-undocumented)))
 
 (defun z80op--detail-insert-entry (label value)
   "Insert LABEL and VALUE in the detail buffer."
@@ -1537,7 +1535,7 @@ affect the outcome."
   (interactive)
   (let ((tap (symbol-name (symbol-at-point))))
     (if (and (not (null tap))
-             (z80op--is-mnemonic tap))
+             (z80op--is-mnemonic tap z80op--mnemonics))
         (setq z80op--filter (concat (downcase tap) " .*"))
       (setq z80op--filter ".*")))
   (switch-to-buffer "*z80*")
@@ -1546,7 +1544,7 @@ affect the outcome."
   (tabulated-list-print))
 
 (defun z80op--init ()
-  (setq z80op--mnemonics (z80op--extract-intruction-mnemonics)))
+  (setq z80op--mnemonics (z80op--extract-intruction-mnemonics z80op--opcode-table)))
 
 ;;; initialization
 
