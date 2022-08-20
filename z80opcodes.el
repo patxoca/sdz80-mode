@@ -63,7 +63,7 @@
 
 ;; cycles, example, flags, opcode, size, documented, description
 
-(setq z80op--opcodes
+(setq z80op--opcode-table
       '(["4" "nop" "------" "00" "1" t "No operation is performed."]
         ["10" "ld bc,**" "------" "01" "3" t "Loads ** into bc."]
         ["7" "ld [bc],a" "------" "02" "1" t "Stores a into the memory location pointed to by bc."]
@@ -1426,7 +1426,7 @@ affect the outcome."
            (and z80op--hide-undocumented
                 (z80op--opcode-undocumented x))
            (not (string-match z80op--filter (z80op--opcode-mnemonic x)))))
-   z80op--opcodes))
+   z80op--opcode-table))
 
 (defun z80op--tabulated-list-entries ()
   "Return the entries to be displayed."
