@@ -1405,7 +1405,7 @@ of each possible value are:
   "Face used on undocumented opcodes.")
 
 (defface z80op-face-detail-label
-  '((t :inherit default :foreground "GreenYellow" :weight bold))
+  '((t :inherit default :weight bold))
   "Face used for the label in the detailed view.")
 
 
